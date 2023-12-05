@@ -27,8 +27,8 @@ struct Input {
     cards: Vec<Card>,
 }
 
-impl Input {
-    pub fn read(file: std::fs::File) -> Self {
+impl From<std::fs::File> for Input {
+    fn from(file: std::fs::File) -> Self {
         use std::io::{BufRead, BufReader};
         let mut cards = Vec::new();
         for line in BufReader::new(file).lines() {
@@ -50,7 +50,9 @@ impl Input {
         }
         Self { cards }
     }
+}
 
+impl Input {
     pub fn calculate_points(&self) -> u32 {
         self.cards.iter().map(|x| x.calculate_points()).sum()
     }
@@ -67,23 +69,17 @@ impl Input {
     }
 }
 
-fn first_part(input: &Input) -> u32 {
+fn part_1(input: &Input) -> u32 {
     input.calculate_points()
 }
 
-fn second_part(input: &Input) -> u32 {
+fn part_2(input: &Input) -> u32 {
     input.advanced_calculate_points()
 }
 
-fn main() -> std::io::Result<()> {
-    let input_files = ["sample_input.txt", "input.txt"];
-    for input_file in input_files {
-        println!("Input: '{input_file}'");
-        let input = Input::read(std::fs::File::open("day04/data/".to_owned() + input_file)?);
-        let first_part_answer = first_part(&input);
-        println!("- First part answer: {first_part_answer}");
-        let second_part_answer = second_part(&input);
-        println!("- Second part answer: {second_part_answer}");
-    }
-    Ok(())
+fn main() {
+    utils::run::<_, _>(
+        &["day04/sample_input.txt", "day04/input.txt"],
+        &[part_1, part_2],
+    );
 }
