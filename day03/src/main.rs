@@ -103,8 +103,7 @@ fn build_number(data: &Vec<char>, j: usize) -> Option<u32> {
 }
 
 fn second_part() {
-    let input =
-        read_input(File::open("day03/data/input.txt").expect("Couldn't open input file"));
+    let input = read_input(File::open("day03/data/input.txt").expect("Couldn't open input file"));
 
     let mut ans = 0;
 

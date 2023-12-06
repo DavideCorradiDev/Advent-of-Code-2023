@@ -91,11 +91,13 @@ fn compute_minimum_viable_cube_set(game: &Vec<CubeSet>) -> CubeSet {
 }
 
 fn second_part() {
-    let input =
-        read_input(File::open("day02/data/input.txt").expect("Couldn't open input file"));
-    let minimum_viable_cube_sets : Vec<CubeSet> = input.iter().map(|x| compute_minimum_viable_cube_set(x)).collect();
-    let powers : Vec<u32> = minimum_viable_cube_sets.iter().map(|x| x.power()).collect();
-    let ans : u32 = powers.iter().sum();
+    let input = read_input(File::open("day02/data/input.txt").expect("Couldn't open input file"));
+    let minimum_viable_cube_sets: Vec<CubeSet> = input
+        .iter()
+        .map(|x| compute_minimum_viable_cube_set(x))
+        .collect();
+    let powers: Vec<u32> = minimum_viable_cube_sets.iter().map(|x| x.power()).collect();
+    let ans: u32 = powers.iter().sum();
     println!("The answer is '{ans}'.");
 }
 

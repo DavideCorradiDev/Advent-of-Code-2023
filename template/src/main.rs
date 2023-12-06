@@ -1,7 +1,5 @@
-#[derive (Debug, Clone)]
-struct Input {
-
-}
+#[derive(Debug, Clone)]
+struct Input {}
 
 impl From<std::fs::File> for Input {
     fn from(file: std::fs::File) -> Self {
@@ -24,5 +22,8 @@ fn part_2(input: &Input) -> u64 {
 }
 
 fn main() {
-    utils::run::<_, _>(&["dayxx/sample_input.txt", "dayxx/input.txt"], &[part_1, part_2]);
+    utils::run::<_, _>(
+        &["dayxx/sample_input.txt", "dayxx/input.txt"],
+        &[part_1, part_2],
+    );
 }

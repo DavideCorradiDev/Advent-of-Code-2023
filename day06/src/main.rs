@@ -50,19 +50,22 @@ fn count_solutions(time: u64, distance: u64) -> u64 {
 }
 
 fn part_1(input: &Input) -> u64 {
-    let mut solutions = Vec::new();
-    for i in 0..input.times.len() {
-        solutions.push(count_solutions(input.times[i], input.distances[i]));
-    }
-    solutions.iter().product()
+    input
+        .times
+        .iter()
+        .zip(input.distances.iter())
+        .map(|(x, y)| count_solutions(*x, *y))
+        .product()
 }
 
 fn concatenate_numbers(v: &Vec<u64>) -> u64 {
-    v.iter()
-        .map(|x| x.to_string())
-        .fold(String::new(), |acc, x| acc + &x)
-        .parse::<u64>()
-        .unwrap()
+    v.iter().rev().fold(0, |acc, x| {
+        let mut mult = 1;
+        while mult < acc {
+            mult *= 10;
+        }
+        acc + mult * x
+    })
 }
 
 fn part_2(input: &Input) -> u64 {
