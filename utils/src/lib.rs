@@ -3,7 +3,7 @@ pub fn run<InputType, SolutionType>(
     solutions: &[fn(&InputType) -> SolutionType],
 ) where
     InputType: From<std::fs::File> + std::fmt::Display,
-    SolutionType: std::fmt::Display,
+    SolutionType: std::fmt::Debug,
 {
     use std::time::Instant;
 
@@ -26,10 +26,12 @@ pub fn run<InputType, SolutionType>(
             let answer = solution(&input);
             let time = time.elapsed();
             println!(
-                "- Part {} answer: '{answer}' (took {} μs)",
+                "- Part {} answer: '{answer:?}' (took {} μs)",
                 i + 1,
                 time.as_micros()
             );
         }
+
+        println!("");
     }
 }
