@@ -78,8 +78,12 @@ fn part_2(input: &Input) -> u32 {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
-        &["day04/sample_input.txt", "day04/input.txt"],
+        &[
+            ("day04/sample_input.txt", PrintMode::None),
+            ("day04/input.txt", PrintMode::None),
+        ],
         &[part_1, part_2],
     );
 }

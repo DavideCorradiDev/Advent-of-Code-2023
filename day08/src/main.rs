@@ -56,16 +56,6 @@ impl From<std::fs::File> for Input {
     }
 }
 
-impl std::fmt::Display for Input {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        if self.map.len() > 16 {
-            write!(f, "Input too large to print {{ Number of directions: {}, number of map entries: {} }}", self.directions.len(), self.map.len())
-        } else {
-            write!(f, "{:?}", self)
-        }
-    }
-}
-
 fn step_forward<'a>(it: u64, current_location: &str, input: &'a Input) -> Option<&'a str> {
     let direction = input.directions[it as usize % input.directions.len()];
     match input.map.get(current_location) {
@@ -126,12 +116,13 @@ fn part_2(input: &Input) -> Option<u64> {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
         &[
-            "day08/sample_input_1.txt",
-            "day08/sample_input_2.txt",
-            "day08/sample_input_3.txt",
-            "day08/input.txt",
+            ("day08/sample_input_1.txt", PrintMode::None),
+            ("day08/sample_input_2.txt", PrintMode::None),
+            ("day08/sample_input_3.txt", PrintMode::None),
+            ("day08/input.txt", PrintMode::None),
         ],
         &[part_1, part_2],
     );

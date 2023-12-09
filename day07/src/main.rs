@@ -157,25 +157,6 @@ impl From<std::fs::File> for Input {
     }
 }
 
-impl std::fmt::Display for Input {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        let max_len = 8;
-        if self.hands.len() > max_len {
-            let mut printable = self.clone();
-            printable.hands.resize(
-                max_len,
-                Hand {
-                    cards: [0; 5],
-                    bid: 0,
-                },
-            );
-            write!(f, "{:?} (clamped to 8 elements)", printable)
-        } else {
-            write!(f, "{:?}", self)
-        }
-    }
-}
-
 fn part_1(input: &Input) -> u64 {
     input.clone().compute_score()
 }
@@ -187,8 +168,9 @@ fn part_2(input: &Input) -> u64 {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
-        &["day07/sample_input.txt", "day07/input.txt"],
+        &[("day07/sample_input.txt", PrintMode::None), ("day07/input.txt", PrintMode::None)],
         &[part_1, part_2],
     );
 }

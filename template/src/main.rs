@@ -3,13 +3,8 @@ struct Input {}
 
 impl From<std::fs::File> for Input {
     fn from(file: std::fs::File) -> Self {
+        use std::io::{BufRead, BufReader};
         Self {}
-    }
-}
-
-impl std::fmt::Display for Input {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        write!(f, "{:?}", self)
     }
 }
 
@@ -22,8 +17,12 @@ fn part_2(input: &Input) -> u64 {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
-        &["dayxx/sample_input.txt", "dayxx/input.txt"],
+        &[
+            ("dayxx/sample_input.txt", PrintMode::Debug),
+            ("dayxx/input.txt", PrintMode::None),
+        ],
         &[part_1, part_2],
     );
 }

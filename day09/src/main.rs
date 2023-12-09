@@ -19,23 +19,6 @@ impl From<std::fs::File> for Input {
     }
 }
 
-impl std::fmt::Display for Input {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        let max_len = 8;
-        if self.sequences.len() > max_len {
-            let mut c = Input {
-                sequences: Vec::new(),
-            };
-            for i in 0..max_len {
-                c.sequences.push(self.sequences[i].clone());
-            }
-            write!(f, "{:?} (Input was clamped because too large)", c)
-        } else {
-            write!(f, "{:?}", self)
-        }
-    }
-}
-
 fn part_1(input: &Input) -> i64 {
     let mut sequence_results = Vec::with_capacity(input.sequences.len());
 
@@ -82,8 +65,12 @@ fn part_2(input: &Input) -> i64 {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
-        &["day09/sample_input.txt", "day09/input.txt"],
+        &[
+            ("day09/sample_input.txt", PrintMode::None),
+            ("day09/input.txt", PrintMode::None),
+        ],
         &[part_1, part_2],
     );
 }

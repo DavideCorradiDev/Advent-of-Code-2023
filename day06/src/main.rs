@@ -29,12 +29,6 @@ impl From<std::fs::File> for Input {
     }
 }
 
-impl std::fmt::Display for Input {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        write!(f, "{:?}", self)
-    }
-}
-
 fn count_solutions(time: u64, distance: u64) -> u64 {
     let tt = time * time;
     let d4 = 4 * distance;
@@ -75,8 +69,12 @@ fn part_2(input: &Input) -> u64 {
 }
 
 fn main() {
+    use utils::PrintMode;
     utils::run::<_, _>(
-        &["day06/sample_input.txt", "day06/input.txt"],
+        &[
+            ("day06/sample_input.txt", PrintMode::None),
+            ("day06/input.txt", PrintMode::None),
+        ],
         &[part_1, part_2],
     );
 }

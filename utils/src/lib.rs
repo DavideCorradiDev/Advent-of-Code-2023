@@ -1,13 +1,19 @@
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrintMode {
+    None,
+    Debug,
+}
+
 pub fn run<InputType, SolutionType>(
-    input_paths: &[&str],
+    inputs: &[(&str, PrintMode)],
     solutions: &[fn(&InputType) -> SolutionType],
 ) where
-    InputType: From<std::fs::File> + std::fmt::Display,
+    InputType: From<std::fs::File> + std::fmt::Debug,
     SolutionType: std::fmt::Debug,
 {
     use std::time::Instant;
 
-    for input_path in input_paths {
+    for (input_path, print_mode) in inputs {
         let full_path = std::path::PathBuf::from("data/").join(input_path);
         let input_file =
             std::fs::File::open(full_path.clone()).expect("Failed to open the input file.");
@@ -19,7 +25,10 @@ pub fn run<InputType, SolutionType>(
             "Read input from: {full_path:?} (took {} μs)",
             input_time.as_micros()
         );
-        println!("{input}");
+
+        if *print_mode == PrintMode::Debug {
+            println!("{input:?}");
+        }
 
         for (i, solution) in solutions.iter().enumerate() {
             let time = Instant::now();
