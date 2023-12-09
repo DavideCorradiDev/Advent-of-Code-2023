@@ -1,17 +1,28 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+#[derive(Debug, Clone)]
+struct Input {
+    data: Vec<String>,
+}
 
-fn first_part() {
-    let file = File::open("day01/data/input.txt").expect("Unable to open the input file");
-    let reader = BufReader::new(file);
+impl From<std::fs::File> for Input {
+    fn from(file: std::fs::File) -> Self {
+        use std::io::{BufRead, BufReader};
+        let data = BufReader::new(file).lines().map(|x| x.unwrap()).collect();
+        Self { data }
+    }
+}
+
+fn part_1(input: &Input) -> Option<u32> {
     let find_digit = |x: &char| {
         return *x >= '0' && *x <= '9';
     };
+
     let mut ans = 0;
 
-    for line in reader.lines() {
-        let line = line.expect("Failed to read line");
-        let first_digit = line.chars().find(find_digit).unwrap().to_digit(10).unwrap();
+    for line in input.data.iter() {
+        let first_digit = match line.chars().find(find_digit) {
+            Some(digit) => digit.to_digit(10).unwrap(),
+            None => return None,
+        };
         let last_digit = line
             .chars()
             .rev()
@@ -23,7 +34,7 @@ fn first_part() {
         ans += calibration_value;
     }
 
-    println!("The total calibration value is '{ans}'.")
+    Some(ans)
 }
 
 fn starts_with_digit(s: &str) -> Option<u32> {
@@ -66,24 +77,28 @@ fn find_digits(s: &String) -> (u32, u32) {
     ans.unwrap()
 }
 
-fn second_part() {
-    let file = File::open("day01/data/input.txt").expect("Unable to open the input file");
-    let reader = BufReader::new(file);
+fn part_2(input: &Input) -> Option<u32> {
     let mut ans = 0;
 
-    for line in reader.lines() {
-        let line = line.expect("Failed to read line");
-        let digits = find_digits(&line);
+    for line in input.data.iter() {
+        let digits = find_digits(line);
         let first_digit = digits.0;
         let last_digit = digits.1;
         let calibration_value = 10 * first_digit + last_digit;
         ans += calibration_value;
     }
 
-    println!("The total calibration value is '{ans}'.")
+    Some(ans)
 }
 
 fn main() {
-    first_part();
-    second_part();
+    use utils::PrintMode;
+    utils::run::<_, _>(
+        &[
+            ("day01/sample_input_1.txt", PrintMode::None),
+            ("day01/sample_input_2.txt", PrintMode::None),
+            ("day01/input.txt", PrintMode::None),
+        ],
+        &[part_1, part_2],
+    );
 }

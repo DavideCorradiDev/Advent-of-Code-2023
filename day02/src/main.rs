@@ -1,5 +1,3 @@
-use std::fs::File;
-
 #[derive(Debug, Clone, Copy)]
 struct CubeSet {
     pub r: u32,
@@ -33,23 +31,29 @@ impl From<&str> for CubeSet {
     }
 }
 
-fn read_input(file: File) -> Vec<Vec<CubeSet>> {
-    use std::io::{BufRead, BufReader};
+#[derive(Debug, Clone)]
+struct Input {
+    data: Vec<Vec<CubeSet>>,
+}
 
-    let mut ans = Vec::new();
+impl From<std::fs::File> for Input {
+    fn from(file: std::fs::File) -> Self {
+        use std::io::{BufRead, BufReader};
+        let mut data = Vec::new();
 
-    let reader = BufReader::new(file);
-    for line in reader.lines() {
-        let line = line.expect("Failed to read line");
-        let (_, game_str) = line.split_once(": ").unwrap();
-        let mut game = Vec::new();
-        for iteration_str in game_str.split("; ") {
-            game.push(CubeSet::from(iteration_str));
+        let reader = BufReader::new(file);
+        for line in reader.lines() {
+            let line = line.expect("Failed to read line");
+            let (_, game_str) = line.split_once(": ").unwrap();
+            let mut game = Vec::new();
+            for iteration_str in game_str.split("; ") {
+                game.push(CubeSet::from(iteration_str));
+            }
+            data.push(game);
         }
-        ans.push(game);
-    }
 
-    ans
+        Self { data }
+    }
 }
 
 fn is_valid_game(game: &Vec<CubeSet>, all_cubes: &CubeSet) -> bool {
@@ -61,21 +65,19 @@ fn is_valid_game(game: &Vec<CubeSet>, all_cubes: &CubeSet) -> bool {
     true
 }
 
-fn first_part() {
-    let input =
-        read_input(File::open("day02/data/sample_input.txt").expect("Couldn't open input file"));
+fn part_1(input: &Input) -> u32 {
     let all_cubes = CubeSet {
         r: 12,
         g: 13,
         b: 14,
     };
     let mut ans = 0;
-    for (idx, game) in input.iter().enumerate() {
+    for (idx, game) in input.data.iter().enumerate() {
         if is_valid_game(&game, &all_cubes) {
             ans += idx + 1;
         }
     }
-    println!("The answer is '{ans}'.");
+    ans as u32
 }
 
 fn compute_minimum_viable_cube_set(game: &Vec<CubeSet>) -> CubeSet {
@@ -90,18 +92,24 @@ fn compute_minimum_viable_cube_set(game: &Vec<CubeSet>) -> CubeSet {
     ans
 }
 
-fn second_part() {
-    let input = read_input(File::open("day02/data/input.txt").expect("Couldn't open input file"));
+fn part_2(input: &Input) -> u32 {
     let minimum_viable_cube_sets: Vec<CubeSet> = input
+        .data
         .iter()
         .map(|x| compute_minimum_viable_cube_set(x))
         .collect();
     let powers: Vec<u32> = minimum_viable_cube_sets.iter().map(|x| x.power()).collect();
     let ans: u32 = powers.iter().sum();
-    println!("The answer is '{ans}'.");
+    ans
 }
 
 fn main() {
-    first_part();
-    second_part();
+    use utils::PrintMode;
+    utils::run::<_, _>(
+        &[
+            ("day02/sample_input.txt", PrintMode::None),
+            ("day02/input.txt", PrintMode::None),
+        ],
+        &[part_1, part_2],
+    );
 }

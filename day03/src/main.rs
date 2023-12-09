@@ -1,17 +1,22 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+#[derive(Debug, Clone)]
+struct Input {
+    data: Vec<Vec<char>>,
+}
 
-fn read_input(file: File) -> Vec<Vec<char>> {
-    let mut ans = Vec::new();
-    for line in BufReader::new(file).lines() {
-        let line = line.expect("Error reading line from file");
-        let mut row = Vec::new();
-        for c in line.chars() {
-            row.push(c);
+impl From<std::fs::File> for Input {
+    fn from(file: std::fs::File) -> Self {
+        use std::io::{BufRead, BufReader};
+        let mut data = Vec::new();
+        for line in BufReader::new(file).lines() {
+            let line = line.expect("Error reading line from file");
+            let mut row = Vec::new();
+            for c in line.chars() {
+                row.push(c);
+            }
+            data.push(row);
         }
-        ans.push(row);
+        Self { data }
     }
-    ans
 }
 
 fn is_symbol(c: char) -> bool {
@@ -53,16 +58,14 @@ fn is_next_to_symbol(data: &Vec<Vec<char>>, i: usize, j: usize) -> bool {
     false
 }
 
-fn first_part() {
-    let input = read_input(File::open("day03/data/input.txt").expect("Couldn't open input file"));
-
+fn part_1(input: &Input) -> u32 {
     let mut ans = 0;
 
-    for i in 0..input.len() {
-        let row = &input[i];
+    for i in 0..input.data.len() {
+        let row = &input.data[i];
         let mut j = 0;
         while j < row.len() {
-            if char::is_numeric(row[j]) && is_next_to_symbol(&input, i, j) {
+            if char::is_numeric(row[j]) && is_next_to_symbol(&input.data, i, j) {
                 while j > 0 && char::is_numeric(row[j - 1]) {
                     j -= 1;
                 }
@@ -78,7 +81,7 @@ fn first_part() {
         }
     }
 
-    println!("The answer is '{ans}'");
+    ans
 }
 
 fn build_number(data: &Vec<char>, j: usize) -> Option<u32> {
@@ -102,13 +105,11 @@ fn build_number(data: &Vec<char>, j: usize) -> Option<u32> {
     }
 }
 
-fn second_part() {
-    let input = read_input(File::open("day03/data/input.txt").expect("Couldn't open input file"));
-
+fn part_2(input: &Input) -> u32 {
     let mut ans = 0;
 
-    for i in 0..input.len() {
-        let row = &input[i];
+    for i in 0..input.data.len() {
+        let row = &input.data[i];
         for j in 0..row.len() {
             if row[j] == '*' {
                 let mut adjacent_numbers = Vec::new();
@@ -123,7 +124,7 @@ fn second_part() {
                     }
                 }
                 if i > 0 {
-                    let row = &input[i - 1];
+                    let row = &input.data[i - 1];
                     if let Some(number) = build_number(row, j) {
                         adjacent_numbers.push(number);
                     } else {
@@ -139,8 +140,8 @@ fn second_part() {
                         }
                     }
                 }
-                if i + 1 < input.len() {
-                    let row = &input[i + 1];
+                if i + 1 < input.data.len() {
+                    let row = &input.data[i + 1];
                     if let Some(number) = build_number(row, j) {
                         adjacent_numbers.push(number);
                     } else {
@@ -163,10 +164,16 @@ fn second_part() {
         }
     }
 
-    println!("The answer is '{ans}'");
+    ans
 }
 
 fn main() {
-    first_part();
-    second_part();
+    use utils::PrintMode;
+    utils::run::<_, _>(
+        &[
+            ("day03/sample_input.txt", PrintMode::None),
+            ("day03/input.txt", PrintMode::None),
+        ],
+        &[part_1, part_2],
+    );
 }
