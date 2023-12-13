@@ -30,8 +30,7 @@ impl Hand {
         }
         if counter.is_empty() {
             vec![joker_count]
-        }
-        else {
+        } else {
             let mut counter: Vec<u64> = counter.iter().map(|x| x.1).collect();
             counter.sort_by(|x, y| y.cmp(x));
             counter[0] += joker_count;
@@ -170,7 +169,10 @@ fn part_2(input: &Input) -> u64 {
 fn main() {
     use utils::PrintMode;
     utils::run::<_, _>(
-        &[("day07/sample_input.txt", PrintMode::None), ("day07/input.txt", PrintMode::None)],
+        &[
+            ("day07/sample_input.txt", PrintMode::None),
+            ("day07/input.txt", PrintMode::None),
+        ],
         &[part_1, part_2],
     );
 }
