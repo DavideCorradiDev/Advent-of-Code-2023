@@ -118,93 +118,39 @@ impl Grid {
         }
     }
 
-    pub fn find_min_heat_loss(&self, start: Coordinates, goal: Coordinates) -> u64 {
-        let mut visited = HashSet::new();
-        let mut stack = BinaryHeap::new();
-        stack.push(State {
-            cost: 0,
-            pos: start,
-            prev_dir: Coordinates::new(0, 0),
-            prev_steps: 0,
-        });
-        let mut min_cost = u64::MAX;
-        while let Some(State {
-            cost,
-            pos,
-            prev_dir,
-            prev_steps,
-        }) = stack.pop()
-        {
-            if visited.contains(&(pos, prev_dir, prev_steps)) {
-                continue;
-            }
-            visited.insert((pos, prev_dir, prev_steps));
-            if pos == goal {
-                min_cost = min_cost.min(cost);
-                break;
-            }
-            for dir in [
-                Coordinates::new(0, -1),
-                Coordinates::new(0, 1),
-                Coordinates::new(-1, 0),
-                Coordinates::new(1, 0),
-            ] {
-                if dir * -1 == prev_dir {
-                    continue;
-                }
-
-                let steps = if prev_dir == dir { prev_steps + 1 } else { 1 };
-
-                if steps > 3 {
-                    continue;
-                }
-
-                let next_pos = pos + dir;
-                if let Some(cost_offset) = self.get(&next_pos) {
-                    let next_cost = cost + cost_offset;
-                    stack.push(State {
-                        cost: next_cost,
-                        pos: next_pos,
-                        prev_dir: dir,
-                        prev_steps: steps,
-                    });
-                }
-            }
-        }
-        min_cost
-    }
-
-    pub fn find_min_heat_loss_with_ultra_crucible(
+    pub fn find_min_heat_loss(
         &self,
         start: Coordinates,
         goal: Coordinates,
+        min_steps: usize,
+        max_steps: usize,
     ) -> u64 {
         let mut visited = HashSet::new();
-        let mut stack = BinaryHeap::new();
-        stack.push(State {
+
+        let mut heap = BinaryHeap::new();
+        heap.push(State {
             cost: 0,
             pos: start,
             prev_dir: Coordinates::new(0, 0),
             prev_steps: 0,
         });
-        let mut min_cost = u64::MAX;
+
         while let Some(State {
             cost,
             pos,
             prev_dir,
             prev_steps,
-        }) = stack.pop()
+        }) = heap.pop()
         {
-            if visited.contains(&(pos, prev_dir, prev_steps)) {
+            if !visited.insert((pos, prev_dir, prev_steps)) {
                 continue;
             }
-            visited.insert((pos, prev_dir, prev_steps));
-            if pos == goal && prev_steps >= 4 {
-                min_cost = min_cost.min(cost);
-                break;
+
+            if pos == goal && prev_steps >= min_steps {
+                return cost;
             }
 
-            let next_dirs = if prev_steps < 4 && pos != start {
+            let next_dirs = if prev_steps < min_steps && pos != start {
                 vec![prev_dir]
             } else {
                 vec![
@@ -222,14 +168,14 @@ impl Grid {
 
                 let steps = if prev_dir == dir { prev_steps + 1 } else { 1 };
 
-                if steps > 10 {
+                if steps > max_steps {
                     continue;
                 }
 
                 let next_pos = pos + dir;
                 if let Some(cost_offset) = self.get(&next_pos) {
                     let next_cost = cost + cost_offset;
-                    stack.push(State {
+                    heap.push(State {
                         cost: next_cost,
                         pos: next_pos,
                         prev_dir: dir,
@@ -238,7 +184,7 @@ impl Grid {
                 }
             }
         }
-        min_cost
+        u64::MAX
     }
 }
 
@@ -273,13 +219,20 @@ impl From<std::fs::File> for Grid {
 }
 
 fn part_1(grid: &Grid) -> u64 {
-    grid.find_min_heat_loss(Coordinates::new(0, 0), grid.size - Coordinates::new(1, 1))
+    grid.find_min_heat_loss(
+        Coordinates::new(0, 0),
+        grid.size - Coordinates::new(1, 1),
+        0,
+        3,
+    )
 }
 
 fn part_2(grid: &Grid) -> u64 {
-    grid.find_min_heat_loss_with_ultra_crucible(
+    grid.find_min_heat_loss(
         Coordinates::new(0, 0),
         grid.size - Coordinates::new(1, 1),
+        4,
+        10,
     )
 }
 
