@@ -2,7 +2,6 @@
 
 members = [
     "utils",
-    "template",
     "day01",
     "day02",
     "day03",
@@ -21,4 +20,11 @@ members = [
     "day16",
     "day17",
     "day18",
+    "day19",
+    "day20",
+    "day21",
+    "day22",
+    "day23",
+    "day24",
+    "day25",
 ]

@@ -20,8 +20,8 @@ fn main() {
     use utils::PrintMode;
     utils::run::<_, _>(
         &[
-            ("dayxx/sample_input.txt", PrintMode::Debug),
-            ("dayxx/input.txt", PrintMode::None),
+            ("day20/sample_input.txt", PrintMode::Debug),
+            ("day20/input.txt", PrintMode::None),
         ],
         &[part_1, part_2],
     );
