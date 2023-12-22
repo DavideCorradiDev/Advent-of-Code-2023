@@ -104,13 +104,13 @@ impl Machine {
             })
     }
 
-    fn find_node_inputs(&self, node: &str) -> Vec<String> {
-        self.modules
-            .iter()
-            .filter(|(_, module)| module.outputs.iter().find(|x| &x[..] == node).is_some())
-            .map(|(name, _)| name.clone())
-            .collect()
-    }
+    // fn find_node_inputs(&self, node: &str) -> Vec<String> {
+    //     self.modules
+    //         .iter()
+    //         .filter(|(_, module)| module.outputs.iter().find(|x| &x[..] == node).is_some())
+    //         .map(|(name, _)| name.clone())
+    //         .collect()
+    // }
 }
 
 #[derive(Debug, Clone)]
@@ -208,7 +208,7 @@ fn part_1(input: &Input) -> u64 {
     (loop_low_pulses + machine.low_pulses) * (loop_high_pulses + machine.high_pulses)
 }
 
-fn part_2(input: &Input) -> u64 {
+fn part_2(_input: &Input) -> u64 {
     0
     // let mut machine = input.machine.clone();
 

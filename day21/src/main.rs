@@ -132,10 +132,10 @@ where
                     if let Some(next_cell) = self.get(&next_pos) {
                         if *next_cell != T::from('#') {
                             let next_dist = distances.get_mut(&next_pos).unwrap();
-                        if distance < *next_dist {
-                            *next_dist = distance;
-                            stack.push(next_pos);
-                        }
+                            if distance < *next_dist {
+                                *next_dist = distance;
+                                stack.push(next_pos);
+                            }
                         }
                     }
                 }
@@ -187,7 +187,10 @@ where
 }
 
 fn part_1(grid: &Grid<char>) -> Vec<usize> {
-    [6, 64].iter().map(|x| grid.count_cells_reachable_by_steps(*x)).collect()
+    [6, 64]
+        .iter()
+        .map(|x| grid.count_cells_reachable_by_steps(*x))
+        .collect()
 }
 
 fn part_2(grid: &Grid<char>) -> Vec<usize> {

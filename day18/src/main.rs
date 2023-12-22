@@ -187,7 +187,10 @@ impl From<std::fs::File> for Input {
 
 fn part_1(input: &Input) -> i64 {
     let instructions: Vec<Instruction> = input.entries.iter().map(|x| x.instruction()).collect();
-    let perimeter: i64 = instructions.iter().map(|Instruction{dir: _, len}| len).sum();
+    let perimeter: i64 = instructions
+        .iter()
+        .map(|Instruction { dir: _, len }| len)
+        .sum();
     let area = Polygon::from(instructions).area();
     area + perimeter / 2 + 1
 }
@@ -198,7 +201,10 @@ fn part_2(input: &Input) -> i64 {
         .iter()
         .map(|x| x.color_instruction())
         .collect();
-    let perimeter: i64 = instructions.iter().map(|Instruction{dir: _, len}| len).sum();
+    let perimeter: i64 = instructions
+        .iter()
+        .map(|Instruction { dir: _, len }| len)
+        .sum();
     let area = Polygon::from(instructions).area();
     area + perimeter / 2 + 1
 }
